@@ -1,0 +1,303 @@
+Red Wine Quality by Joe Lundberg
+========================================================
+```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
+library(ggplot2)
+knitr::opts_chunk$set(error = TRUE)
+```
+
+```{r echo=FALSE, Load_the_Data}
+wineInfo <- read.csv('wineQualityReds.csv')
+```
+> I chose to explore the red wine data set. I am not a wine drinker but have 
+always been curious on what makes a good wine. I plan to explore what chemical 
+properties make a red wine have a good quality. This data set contains 1599 
+red wines with 11 columns on the chemical properties of the wine.
+
+# Univariate Plots Section
+
+> There looks to be roughly 1600 records with 13 columns in the table. The 
+record count and column names can be seen below.
+
+```{r echo=FALSE, Univariate_Plots}
+NROW(wineInfo)
+names(wineInfo)
+```
+```{r echo=FALSE}
+qplot(x= quality, data = wineInfo)
+```
+> This chart shows that most wines that were looked at were mid range for wine 
+quality.
+
+```{r echo=FALSE}
+qplot(x= alcohol, data = wineInfo)
+```
+> This chart shows the count of wine by alcohol percentage.
+
+```{r echo=FALSE}
+qplot(x= density, data = wineInfo)
+```
+> This chart shows the density of wine for the data set.
+
+```{r echo=FALSE}
+qplot(x= citric.acid, data = wineInfo)
+```
+
+> This chart shows the amount of citric acid in wine for the data set.
+
+```{r echo=FALSE}
+qplot(x= fixed.acidity, data = wineInfo)
+```
+
+
+> This chart shows the fixed acidity level in wine for the data set.
+
+```{r echo=FALSE}
+qplot(x= volatile.acidity, data = wineInfo)
+```
+
+> This chart shows the volatile acidity level in wine for the data set.
+
+```{r echo=FALSE}
+qplot(x= chlorides, data = wineInfo)
+```
+
+>This chart shows the chloride level in wine for the data set.
+
+### What is the structure of your dataset?
+
+> My dataset consists 1599 samples of wine. There are 11 variables that are 
+defined with the wine. All variables are numeric data types with the sample 
+and quality being integer data types.
+
+### What is/are the main feature(s) of interest in your dataset?
+
+>I am mainly interested in what variables make up the best quality of wine. 
+
+### What other features in the dataset do you think will help support your \
+investigation into your feature(s) of interest?
+
+>I think the amount of alcohol, acids and sugars will help determine what 
+makes a good wine.
+
+### Did you create any new variables from existing variables in the dataset?
+
+> I have not created any new variables yet in my analysis.
+
+### Of the features you investigated, were there any unusual distributions? \
+Did you perform any operations on the data to tidy, adjust, or change the form \
+of the data? If so, why did you do this?
+
+> I don't think this will be needed until I start looking at bivariate or
+multivarate anaysis.
+
+# Bivariate Plots Section
+
+```{r echo=FALSE, Bivariate_Plots}
+ggplot(aes(x = quality, y= alcohol),data = wineInfo) + geom_point()
+```
+>This scatter plot compares the quality of a wine by it's alcohol percentage.
+
+```{r echo=FALSE}
+ggplot(aes(x = quality, y= citric.acid),data = wineInfo) + geom_point()
+```
+>This scatter plot compares the quality of a wine by it's amount of citric acid.
+
+```{r echo=FALSE}
+ggplot(aes(x = quality, y= residual.sugar),data = wineInfo) + geom_point()
+```
+>This scatter plot compares the quality of a wine by it's amount of residual
+sugar.
+
+```{r echo=FALSE}
+ggplot(aes(x = quality, y= density),data = wineInfo) + geom_point()
+```
+
+>This scatter plot compares the quality of a wine by it's density.
+
+```{r echo=FALSE}
+ggplot(aes(x = residual.sugar, y= alcohol),data = wineInfo) + geom_point()
+```
+
+>This scatter plot compares the sugar level of a wine with its alcohol content.
+
+```{r echo=FALSE}
+ggplot(aes(x = density, y= pH),data = wineInfo) + geom_point()
+```
+
+>This scatter plot compares the density of a wine with its pH level.
+
+```{r echo=FALSE}
+ggplot(aes(x = pH, y= citric.acid),data = wineInfo) + geom_point()
+```
+```{r echo=FALSE}
+ggplot(aes(x = pH, y= fixed.acidity),data = wineInfo) + geom_point()
+```
+```{r echo=FALSE}
+ggplot(aes(x = pH, y= volatile.acidity),data = wineInfo) + geom_point()
+```
+>The last three scatter plots compares the acids of a wine with its pH level.
+
+```{r echo=FALSE}
+ggplot(aes(x = quality, y= chlorides),data = wineInfo) + geom_point()
+```
+
+>This charts shows the relationship bewtween chlorides and quality.
+
+# Bivariate Analysis
+
+
+### Talk about some of the relationships you observed in this part of the \
+investigation. How did the feature(s) of interest vary with other features in \
+the dataset? 
+>It appears that the higher the sugar level usually means lower the alcohol
+content. I also noticed the lower levels of acid usually means a higher pH 
+level. It also shows the lower the chloride level the higher the quality.
+
+### Did you observe any interesting relationships between the other features \
+(not the main feature(s) of interest)?
+> I thought the relationship between sugar and quality was very interesting. I
+wasn't expecting a lower sugar level meant a better quality of wine but the 
+data proves that is true.
+
+### What was the strongest relationship you found?
+> I feel that the sugar to alcohol content was a strong relationship. It 
+appeared that most wines stuck to a lower amount of sugar and that the alcohol
+content was very similar. There were some outliers that led me to believe the 
+more sugar added the less the alcohol content.
+
+# Multivariate Plots Section
+>In this section I decided to create a new variable call quality.type. By doing
+this I am able to categorize the quality of wines into three categories; 
+excellent, average and poor. This way I will be able to compare multiple 
+variables with the quality type and by doing so I should be able to see results
+that will define an excellent wine. Below is the code I used to create the new
+variable.
+
+
+
+```{r echo=FALSE,results="hide", Multivariate_Plots}
+wineInfo$quality.type
+attach(wineInfo)
+wineInfo$quality.type[quality > 6] <- "Excellent"
+wineInfo$quality.type[quality  > 3 & quality <= 6] <- "Average"
+wineInfo$quality.type[quality  <= 3] <- "Poor"
+#detach(wineInfo)
+
+ggplot(wineInfo, aes(x = alcohol, y = residual.sugar, colour = quality.type)) +
+  geom_point() + xlab(quality.type)
+```
+>This charts shows the relationship bewtween residual sugar and alcohol based
+on the quality type. It appears that most average wines are on low end for 
+sugar and alcohol. It also looks like a lot of the excellent wines tend to have
+higher alcohol and sugar content.
+
+```{r echo=FALSE}
+
+ggplot(wineInfo, aes(x = citric.acid, y = fixed.acidity, colour = quality.type)) +
+  geom_point() + xlab(quality.type)
+```
+>This charts shows the relationship bewtween citric acid and fixed acidity based
+on the quality type. It appears that most average wines are on low end for 
+both. It looks like the most wines that are excellent have about .5 for citric
+acid and 8 to 9 for fixed acidity. 
+
+```{r echo=FALSE}
+
+ggplot(wineInfo, aes(x = citric.acid, y = volatile.acidity, colour = quality.type)) +
+  geom_point() + xlab(quality.type)
+```
+
+>This charts shows the relationship bewtween citric acid and volatile acidity 
+based on the quality type. It appears that most average wines are on low end 
+for citric acid and on the mid to high range for volatile acidity. It looks 
+like the most wines that are excellent have about .5 for citric
+acid and are low for the volatile acidity level. 
+
+```{r echo=FALSE}
+
+ggplot(wineInfo, aes(x = pH, y = alcohol, colour = quality.type)) +
+  geom_point() + xlab(quality.type)
+```
+>This charts shows the relationship bewtween alcohol and the pH level based on
+the quality type. It appears all the wines tested are on the acidic side of the
+pH scale. This tells me that is a common characteristic of wine. I also see the 
+most excellent are higher in alcohol content and I don't feel pH has much 
+correlation in determining a wines quality.
+
+# Multivariate Analysis
+
+### Talk about some of the relationships you observed in this part of the \
+investigation. Were there features that strengthened each other in terms of \
+looking at your feature(s) of interest?
+
+>I believe from what I found that part of making an excellent wine is keeping
+the sugar levels low, the alcohol percentage in the middle range and having a
+low volatile acidity level as well as around .5 for citric acid.
+
+### Were there any interesting or surprising interactions between features?
+
+>I was suprised that the higher a fixed acidity level the lower quality of wine.
+I then researched this further and found out that this can make wine taste like
+vinegar.
+
+------
+
+# Final Plots and Summary
+
+### Plot One
+```{r echo=FALSE, Plot_One}
+QualityPlot <- ggplot(wineInfo,aes(quality))+
+  geom_histogram(binwidth=1,boundary=-0.5)
+print(QualityPlot + ggtitle("Quality Count"))
+```
+
+### Description One
+>I chose this chart because it really captures the picture of the size of the
+data set being used. As you can see most wines that were analysed were already 
+mid range wines. It would be nice to have a larger data set that included more
+excellent and poor wines. This data was also what I used to make my quality.type
+variable. 
+
+### Plot Two
+```{r echo=FALSE, Plot_Two}
+Vacidity <- ggplot(wineInfo, aes(x = citric.acid, y = volatile.acidity, colour = quality.type)) +
+  geom_point() + xlab(quality.type)
+print(Vacidity + ggtitle("Volatile Acidity by Quality Type"))
+
+```
+
+### Description Two
+
+> I chose this chart because it made me dig into what the volatile acidity of 
+wine can do and found out that it can leave a bad taste to the wine. I think 
+this is a very important variable to look at when judging a wine. 
+
+### Plot Three
+```{r echo=FALSE, Plot_Three}
+SugarLevel <-ggplot(wineInfo, aes(x = alcohol, y = residual.sugar, colour = quality.type)) +
+  geom_point() + xlab(quality.type)
+print(SugarLevel + ggtitle("Sugar Level by Quality Type"))
+```
+
+### Description Three
+
+> I chose this chart because I was really interested in the correlation between
+sugar level and alcohol percentage. I think it really represents that an
+excellent wine has higher alcohol percentage and is on the lower end for sugar
+content.
+
+------
+
+# Reflection
+
+> The red wines data set contains information on 1599 wines with 12 variables.
+I started by digging into each variables in the data set. From there it lead me
+into looking further into sugar levels, alcohol levels, citric acid levels and
+acidity both volatile and fixed. I am not a wine drinker so my biggest question 
+was what makes an excellent wine and if I found this answer maybe that would be 
+the wine for me.
+I do feel the data set is small and most wines on the list were average quality 
+wines. This could skew my assumptions as to what an excellent wine is. I feel 
+I found what an excellent constists of. It appears that it should be lower in 
+sugar, mid alcohol content and mid citric acid. The volatile and fixed acidity 
+should also be low to eliminate the vinegar taste. 
